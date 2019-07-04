@@ -4,68 +4,59 @@ Python Aplication Template
 Licence: GPLv3
 """
 
-from flask import url_for, redirect, render_template, flash, g, session
-from flask.ext.login import login_user, logout_user, current_user, login_required
-from app import app, lm
-from forms import ExampleForm, LoginForm
-from models import User
+import os
+import subprocess
+from flask import url_for, redirect, render_template, flash, request, g, session
+from app import app
+from werkzeug.utils import secure_filename
+from flask import send_from_directory
 
-@app.route('/')
-def index():
-	return render_template('index.html')
+UPLOAD_FOLDER = '/home/pedroantunes'
+ALLOWED_EXTENSIONS = set(['mp4'])
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
+def allowed_file(filename):
+    raw_file_name = os.path.basename(filename).split('.')[0]
+    file_dir = os.path.dirname(UPLOAD_FOLDER)
+    file_path_output = file_dir + '/' + raw_file_name + '.wav'
+    print('processing file: %s' % filename)
+    subprocess.call(['ffmpeg', '-i', filename, '-codec:a', 'pcm_s16le', '-ac', '1', file_path_output])
+    print('file %s saved' % file_path_output)
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-@app.route('/list/')
-def posts():
-	return render_template('list.html')
+@app.route('/', methods=['GET', 'POST'])
+def upload_file():
+    if request.method == 'POST':
+        # check if the post request has the file part
+        if 'file' not in request.files:
+            flash('No file part')
+            return redirect(request.url)
+        file = request.files['file']
+        # if user does not select file, browser also
+        # submit an empty part without filename
+        if file.filename == '':
+            flash('No selected file')
+            return redirect(request.url)
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            return redirect(url_for('uploaded_file',
+                                    filename=filename))
+    return '''
+    <!doctype html>
+    <title>Upload new File</title>
+    <h1>Upload new File</h1>
+    <form method=post enctype=multipart/form-data>
+      <input type=file name=file>
+      <input type=submit value=Upload>
+    </form>
+    '''
 
-@app.route('/new/')
-@login_required
-def new():
-	form = ExampleForm()
-	return render_template('new.html', form=form)
+@app.route('/uploads/<filename>')
+def uploaded_file(filename):
+    return send_from_directory(app.config['UPLOAD_FOLDER'],
+                               filename)
 
-@app.route('/save/', methods = ['GET','POST'])
-@login_required
-def save():
-	form = ExampleForm()
-	if form.validate_on_submit():
-		print "salvando os dados:"
-		print form.title.data
-		print form.content.data
-		print form.date.data
-		flash('Dados salvos!')
-	return render_template('new.html', form=form)
-
-@app.route('/view/<id>/')
-def view(id):
-	return render_template('view.html')
-
-# === User login methods ===
-
-@app.before_request
-def before_request():
-    g.user = current_user
-
-@lm.user_loader
-def load_user(id):
-    return User.query.get(int(id))
-
-@app.route('/login/', methods = ['GET', 'POST'])
-def login():
-    if g.user is not None and g.user.is_authenticated():
-        return redirect(url_for('index'))
-    form = LoginForm()
-    if form.validate_on_submit():
-        login_user(g.user)
-
-    return render_template('login.html', 
-        title = 'Sign In',
-        form = form)
-
-@app.route('/logout/')
-def logout():
-    logout_user()
-    return redirect(url_for('index'))
 
 # ====================
