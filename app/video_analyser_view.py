@@ -12,15 +12,14 @@ from werkzeug.utils import secure_filename
 from flask import send_from_directory
 
 UPLOAD_FOLDER = '/home/pedroantunes'
-ALLOWED_EXTENSIONS = set(['mp4'])
+ALLOWED_EXTENSIONS = set(['mp4', '3gp'])
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 def allowed_file(filename):
     raw_file_name = os.path.basename(filename).split('.')[0]
-    file_dir = os.path.dirname(UPLOAD_FOLDER)
-    file_path_output = file_dir + '/' + raw_file_name + '.wav'
-    print('processing file: %s' % filename)
-    subprocess.call(['ffmpeg', '-i', filename, '-codec:a', 'pcm_s16le', '-ac', '1', file_path_output])
+    file_path_output = UPLOAD_FOLDER + '/' + raw_file_name + '.wav'
+    print('processing file: %s' % '/home/pedroantunes/Downloads/' + filename)
+    subprocess.call(['ffmpeg', '-i', '/home/pedroantunes/Downloads/' + filename, '-codec:a', 'pcm_s16le', '-ac', '1', file_path_output])
     print('file %s saved' % file_path_output)
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
