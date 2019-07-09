@@ -1,21 +1,11 @@
-let step = 'step1';
 
-const step1 = document.getElementById('step1');
 const step2 = document.getElementById('step2');
 const step3 = document.getElementById('step3');
 const step4 = document.getElementById('step4');
 
 function next(phase) {
-  if (phase === 'initial') {
-    step = 'step2';
-    step1.classList.remove("is-active");
-    step1.classList.add("is-complete");
-    step2.classList.add("is-active");
-
-  } else if (phase === 'audio_extracted') {
+  if (phase === 'audio_extracted') {
     step = 'step3';
-    step1.classList.remove("is-active");
-    step1.classList.add("is-complete");
     step2.classList.add("is-active");
     step2.classList.remove("is-active");
     step2.classList.add("is-complete");
@@ -23,8 +13,6 @@ function next(phase) {
 
   } else if (phase === 'silence_segments') {
     step = 'step4';
-    step1.classList.remove("is-active");
-    step1.classList.add("is-complete");
     step2.classList.add("is-active");
     step2.classList.remove("is-active");
     step2.classList.add("is-complete");
@@ -35,8 +23,6 @@ function next(phase) {
 
   } else if (phase === 'silence_removed') {
     step = 'complete';
-    step1.classList.remove("is-active");
-    step1.classList.add("is-complete");
     step2.classList.add("is-active");
     step2.classList.remove("is-active");
     step2.classList.add("is-complete");
@@ -48,13 +34,11 @@ function next(phase) {
     step4.classList.add("is-complete");
 
   } else if (phase === 'complete') {
-    step = 'step1';
+    step = 'step2';
 
     step4.classList.remove("is-complete");
     step3.classList.remove("is-complete");
     step2.classList.remove("is-complete");
-    step1.classList.remove("is-complete");
-    step1.classList.add("is-active");
   }
 }
 
@@ -71,7 +55,7 @@ function addHidden(theForm, key, value) {
     theForm.appendChild(input);
 }
 
-
+//Get token
 const Http = new XMLHttpRequest();
 const url='http://localhost:5001/get_id';
 Http.open("GET", url);
@@ -85,8 +69,7 @@ Http.onreadystatechange = (e) => {
     }
 }
 
-
-
+//Check state changes
 function checkUpdates(url) {
   var xhr = new XMLHttpRequest();
   xhr.open('GET', url);

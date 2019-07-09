@@ -9,13 +9,10 @@ from flask import url_for, redirect, flash, request, jsonify
 from app import app
 from werkzeug.utils import secure_filename
 from flask import send_from_directory
-from flask_json import FlaskJSON, JsonError, json_response, as_json
 import uuid
 
 from video_analyser_model import VideoAnalyser
 from flask import render_template
-
-from uuid import uuid4
 
 ALLOWED_EXTENSIONS = set(['mp4'])
 
@@ -76,7 +73,7 @@ def upload_file():
         connection_status[token_key] = 'silence_segments'
 
         # remove silence segments from video
-        ouput_video = video_analyser.remove_silence_segments_from_video(silence_segments)
+        ouput_video = video_analyser.create_video_without_silence_segments(silence_segments)
 
         connection_status[token_key] = 'silence_removed'
 
@@ -86,4 +83,4 @@ def upload_file():
 @app.route('/uploads/<filename>')
 def uploaded_file(filename):
     return send_from_directory(app.config['UPLOAD_FOLDER'],
-                               filename)
+                               filename, as_attachment=True)

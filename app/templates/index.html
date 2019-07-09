@@ -4,14 +4,24 @@
 
 {%block main_content%}
     <div class="bootstrap-iso">
-        <form method=post enctype=multipart/form-data name="file_form">
+        <div class="container">
+          <div class="jumbotron">
+            <h1>Video Silence Removal</h1>
+              <p></p>
+            <p>Please use the link bellow to upload the video. Only MP4 format is supported.</p>
+          </div>
+            <form method=post enctype=multipart/form-data name="file_form">
             <div class="form-group">
                 <span class="btn btn-default btn-file">
                     <input type=file name=file>
                 </span>
                 <input type=submit class="btn btn-primary" value=Upload>
             </div>
-        </form>
+            </form>
+
+
+        </div>
+
     </div>
 
 
@@ -19,24 +29,18 @@
 
       <div class="progress-track"></div>
 
-      <div id="step1" class="progress-step">
-        Step One
-      </div>
-
       <div id="step2" class="progress-step">
-        Step Two
+        Video Uploaded Successfully
       </div>
 
       <div id="step3" class="progress-step">
-        Step Three
+        Silence Segments Detected
       </div>
 
       <div id="step4" class="progress-step">
-        Complete
+        Completed
       </div>
     </div>
-
-    <button onClick=next()>Next Step</button>
 
 {%endblock%}
 

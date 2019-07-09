@@ -1,5 +1,9 @@
-#! /usr/bin/env python
-# encoding: utf-8
+# -*- encoding: utf-8 -*-
+"""
+Python Aplication Template
+Licence: GPLv3
+"""
+
 
 
 import numpy
@@ -47,15 +51,13 @@ class SoundAnalyser:
         return result
 
     # Pull a portion of the buffer to process
-    # (pulled samples are deleted after being
-    # processed
     def get_frame(self):
         window = self.buffer[:self.buffer_size]
         self.buffer = self.buffer[self.buffer_size:]
         return window
 
     # Adds new audio samples to the internal
-    # buffer and process them
+    # buffer and process it
     def process(self, data):
         if self.add_samples(data):
             while len(self.buffer) >= self.buffer_size:
@@ -77,6 +79,9 @@ class SoundAnalyser:
                     else:
                         self.silence_elements_per_second.append(0)
 
+# Convert segment array into sound array
+# 0 means voice element
+# 1 means silence element
 def calculate_time(list, time):
     time_list =  []
     urlist_len = len(list) - 1
@@ -111,12 +116,11 @@ def calculate_time(list, time):
 
     return time_list
 
-
+# Get the list of voice segments from a wav file
 def get_voiced_segments(wave_file):
     rate, wav = wf.read(wave_file)
     sound_analyser = SoundAnalyser()
+    # process wav and detect silence segments
     sound_analyser.process(wav)
-    print sound_analyser.silence_elements_per_second
     voice_segments = calculate_time(sound_analyser.silence_elements_per_second, time_interval)
-    print voice_segments
     return  voice_segments

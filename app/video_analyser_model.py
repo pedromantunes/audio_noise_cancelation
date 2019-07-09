@@ -15,6 +15,7 @@ class VideoAnalyser(object):
         self.video_file = video_file
         self.file_name = ""
 
+    # Extract wav file from mp4 file
     def get_audio_from_video(self):
         time = datetime.now().strftime("%H:%M:%S")
         self.file_name = os.path.basename(self.video_file).split('.')[0] + time
@@ -28,7 +29,8 @@ class VideoAnalyser(object):
     def get_sound_segments(self, wav):
         return silence_removal.get_voiced_segments(wav)
 
-    def remove_silence_segments_from_video(self, segments):
+    # create video file without the silence segments
+    def create_video_without_silence_segments(self, segments):
 
         output_video = self.file_name + "_processed" + ".mp4"
 
