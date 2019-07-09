@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/flask-app-template.iml" filepath="$PROJECT_DIR$/.idea/flask-app-template.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/muse-ai-video-analyser.iml" filepath="$PROJECT_DIR$/.idea/muse-ai-video-analyser.iml" />
     </modules>
   </component>
 </project>

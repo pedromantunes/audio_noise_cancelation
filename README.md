@@ -25,8 +25,6 @@ gcc, make, Python 2.5+, python-pip, virtualenv
 ## Instalation
 
 First, clone this repository.
-
-    $ git clone http://github.com/berlotto/flask-app-template
     $ cd flask-app-template
 
 Create a virtualenv, and activate this: 
